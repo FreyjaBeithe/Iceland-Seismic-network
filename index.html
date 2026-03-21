@@ -267,5 +267,14 @@ if (searchInput) {
             });
         }
     </script>
+    function refreshDrumplot(stationUrl) {
+    const img = document.getElementById('drumplot-img');
+    if (img) {
+        // We add a timestamp (?t=...) to force the browser to fetch the newest image
+        const newUrl = `http://hraun.vedur.is/ja/drumplot/drumplot/${stationUrl}_highpass_2.0.png?t=${new Date().getTime()}`;
+        img.src = newUrl;
+        console.log("Refreshing image for: " + stationUrl);
+    }
+}
 </body>
 </html>
