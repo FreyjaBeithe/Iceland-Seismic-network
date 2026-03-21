@@ -91,11 +91,21 @@
         var sidebar = L.control.sidebar({ container: 'sidebar' }).addTo(map);
         
 
-        sidebar.on('hide', function () {
-            allMarkers.forEach(marker => marker.addTo(map));
-            const searchInput = document.getElementById('stationSearch');
-            if (searchInput) searchInput.value = ''; 
+      sidebar.on('closing', function () {
+    // 1. Find the search box
+    const searchInput = document.getElementById('stationSearch');
+    
+    if (searchInput) {
+        // 2. Clear the text inside the box
+        searchInput.value = '';
+        
+        // 3. IMPORTANT: Tell the search function to run one last time with "" (nothing)
+        // This forces every marker to pass the 'isMatch' test and reappear
+        allMarkers.forEach(marker => {
+            marker.addTo(map);
         });
+    }
+});
 
         // 3. Your Station Data
         var stations = [
