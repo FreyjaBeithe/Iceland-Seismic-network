@@ -157,42 +157,42 @@
             
         
 
-    // 1. Create the empty array BEFORE the loop (around line 159)
 const allMarkers = [];
 
-// 2. This is your line 160
-stations.forEach(station => {
-    const marker = L.marker([station.lat, station.lon]).addTo(map);
+stations.forEach(st => {
+    // 1. Create the marker
+    const marker = L.marker([st.lat, st.lon]).addTo(map);
     
-    // Add these two lines so the search bar knows what to look for
-    marker.stationName = station.name.toLowerCase();
-    marker.stationID = station.id.toLowerCase();
+    // 2. Attach search data
+    marker.stationName = st.name.toLowerCase();
+    marker.stationID = st.id.toLowerCase();
+    allMarkers.push(marker);
 
-    // Keep your existing click function inside here
+    // 3. Click Event
     marker.on('click', function() {
         sidebar.open('home');
-        document.getElementById('station-content').innerHTML = `
+        
+        var drumURL = `http://hraun.vedur.is/ja/drumplot/drumplot/${st.id}_highpass_2.0.png`;
+        
+        var content = `
             <div style="padding:15px;">
-                <input type="text" id="stationSearch" placeholder="Search station (e.g. LSK)..." 
-                       style="width: 100%; padding: 10px; border-radius: 4px; border: 1px solid #ccc; margin-bottom:20px;">
-                <h3>${station.name} (${station.id.toUpperCase()})</h3>
-                <p><b>Coordinates:</b> ${station.lat}, ${station.lon}</p>
-                <img src="http://hraun.vedur.is/ja/drumplot/drumplot/${station.id}_highpass_2.0.png" 
-                     style="width:100%; height:auto;" alt="Seismic Drumplot">
+                <h2 style="color:#c62828; margin-top:0;">${st.name} (${st.id.toUpperCase()})</h2>
+                <div class="coords-text">LAT: ${st.lat} | LON: ${st.lon}</div>
+                <p style="margin:20px 0; font-size:1.1em;">Real-time plot data for <strong>${st.name}</strong></p>
+                <img src="${drumURL}" style="width:100%; height:auto; border-radius:4px;" alt="Seismic Drumplot">
+                <div style="margin-top:20px;">
+                    <a href="${drumURL}" target="_blank" class="btn">VIEW HIGH-PASS DRUMPLOT</a>
+                </div>
             </div>
         `;
-        // Re-attach the search listener every time the sidebar content is rewritten
-        attachSearchListener(); 
+        
+        document.getElementById('station-data').innerHTML = content;
     });
-
-    allMarkers.push(marker); // Save to our list
 });
 
-// 3. Add the Search Logic Function below the loop
-function attachSearchListener() {
-    const searchInput = document.getElementById('stationSearch');
-    if (!searchInput) return;
-
+// 4. The Search Logic (Place this below the loop)
+const searchInput = document.getElementById('stationSearch');
+if (searchInput) {
     searchInput.addEventListener('input', function(e) {
         const term = e.target.value.toLowerCase();
         allMarkers.forEach(marker => {
@@ -204,11 +204,7 @@ function attachSearchListener() {
             }
         });
     });
-}   
-    
-    interactive: false
-}).addTo(map);
-
+}
           
 
             marker.on('click', function() {
