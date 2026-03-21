@@ -172,7 +172,7 @@ stations.forEach(st => {
     marker.on('click', function() {
         sidebar.open('home');
         
-        var drumURL = `http://hraun.vedur.is/ja/drumplot/drumplot/${st.id}_highpass_2.0.png`;
+        var drumURL = `http://hraun.vedur.is/ja/drumplot/drumplot/${st.url}_highpass_2.0.png`;
         
         var content = `
             <div style="padding:15px;">
@@ -186,11 +186,11 @@ stations.forEach(st => {
             </div>
         `;
         
-        document.getElementById('station-data').innerHTML = content;
+        document.getElementById('station-content').innerHTML = content;
     });
 });
 
-// 4. The Search Logic (Place this below the loop)
+// 4. The Search Logic
 const searchInput = document.getElementById('stationSearch');
 if (searchInput) {
     searchInput.addEventListener('input', function(e) {
@@ -205,25 +205,6 @@ if (searchInput) {
         });
     });
 }
-          
 
-            marker.on('click', function() {
-                var drumURL = `http://hraun.vedur.is/ja/drumplot/drumplot/${st.url}_highpass_2.0.png`;
-                
-                var content = `
-                    <h2 style="color:#c62828; margin-top:0;">${st.name}</h2>
-                    <div class="coords-text">LAT: ${st.lat} | LON: ${st.lon}</div>
-                    <p style="margin:20px 0; font-size:1.1em;">Real-time plot data for <strong>${st.name}</strong></p>
-                    <div style="margin-top:20px;">
-                        <a href="${drumURL}" target="_blank" class="btn">VIEW HIGH-PASS DRUMPLOT ↗</a>
-                    </div>
-                `;
-                document.getElementById('station-content').innerHTML = content;
-                sidebar.open('home');
-            });
-        });
-
-        L.control.zoom({ position: 'topright' }).addTo(map);
-    </script>
-</body>
-</html>
+// 5. Re-add the zoom control (Your old line 226)
+L.control.zoom({ position: 'topright' }).addTo(map);
