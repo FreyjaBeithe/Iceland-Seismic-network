@@ -155,42 +155,34 @@
 
         
             
-        
 
 const allMarkers = [];
 
+// This part creates the dots on the map
 stations.forEach(st => {
-    // 1. Create the marker
     const marker = L.marker([st.lat, st.lon]).addTo(map);
-    
-    // 2. Attach search data
     marker.stationName = st.name.toLowerCase();
     marker.stationID = st.id.toLowerCase();
     allMarkers.push(marker);
 
-    // 3. Click Event
     marker.on('click', function() {
         sidebar.open('home');
-        
         var drumURL = `http://hraun.vedur.is/ja/drumplot/drumplot/${st.url}_highpass_2.0.png`;
         
-        var content = `
-            <div style="padding:15px;">
-                <h2 style="color:#c62828; margin-top:0;">${st.name} (${st.id.toUpperCase()})</h2>
-                <div class="coords-text">LAT: ${st.lat} | LON: ${st.lon}</div>
-                <p style="margin:20px 0; font-size:1.1em;">Real-time plot data for <strong>${st.name}</strong></p>
-                <img src="${drumURL}" style="width:100%; height:auto; border-radius:4px;" alt="Seismic Drumplot">
-                <div style="margin-top:20px;">
-                    <a href="${drumURL}" target="_blank" class="btn">VIEW HIGH-PASS DRUMPLOT</a>
-                </div>
+        // We target 'station-data' so we don't delete the search bar!
+        document.getElementById('station-data').innerHTML = `
+            <div style="padding:10px;">
+                <h2 style="color:#c62828;">${st.name} (${st.id.toUpperCase()})</h2>
+                <p>LAT: ${st.lat} | LON: ${st.lon}</p>
+                <img src="${drumURL}" style="width:100%; border-radius:4px;">
+                <br><br>
+                <a href="${drumURL}" target="_blank" class="btn">Full Image</a>
             </div>
         `;
-        
-        document.getElementById('station-content').innerHTML = content;
     });
 });
 
-// 4. The Search Logic
+// This part makes the search bar work
 const searchInput = document.getElementById('stationSearch');
 if (searchInput) {
     searchInput.addEventListener('input', function(e) {
@@ -205,6 +197,3 @@ if (searchInput) {
         });
     });
 }
-
-// 5. Re-add the zoom control (Your old line 226)
-L.control.zoom({ position: 'topright' }).addTo(map);
