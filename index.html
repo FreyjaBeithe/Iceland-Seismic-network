@@ -8,27 +8,27 @@
     <style>
         body { margin: 0; padding: 0; font-family: 'Segoe UI', Arial, sans-serif; background: #1a1a1a; }
         #map { position: absolute; top: 0; bottom: 0; width: 100%; }
-       .station-label {
-    background: transparent !important;
-    border: none !important;
-    box-shadow: none !important;
-    color: #c62828; /* This keeps the text red */
-    font-weight: bold;
-    font-size: 12px;
-    text-shadow: 1px 1px 0px #fff, -1px -1px 0px #fff, 1px -1px 0px #fff, -1px 1px 0px #fff; /* This adds a white "glow" so you can see it on the map */
-}
+        /* Professional Ghost Labels */
+        .station-label {
+            background: transparent !important;
+            border: none !important;
+            box-shadow: none !important;
+            color: #c62828;
+            font-weight: bold;
+            font-size: 11px;
+            text-shadow: 1px 1px 1px #fff;
+        }
         .sidebar-header { background: #c62828 !important; }
-        .btn { display: block; background: #c62828; color: white; padding: 14px; text-align: center; 
-               text-decoration: none; border-radius: 5px; font-weight: bold; margin-bottom: 10px; transition: background 0.3s; }
+        .btn { display: block; background: #c62828; color: white; padding: 10px; text-align: center; 
+               text-decoration: none; border-radius: 5px; font-weight: bold; margin-bottom: 5px; transition: background 0.3s; border: none; cursor: pointer; }
         .btn:hover { background: #9b1c1c; }
         .coords-text { font-family: monospace; font-size: 11px; color: #666; background: #f4f4f4; padding: 5px; border-radius: 3px; border-left: 3px solid #c62828; }
     </style>
 </head>
 <body>
-<div id="sidebar" class="leaflet-sidebar collapsed">
-        <div class="leaflet-sidebar-tabs">
-            <ul role="tablist"><li><a href="#home" role="tab">📉</a></li></ul>
-        </div>
+
+    <div id="sidebar" class="leaflet-sidebar collapsed">
+        <div class="leaflet-sidebar-tabs"><ul role="tablist"><li><a href="#home" role="tab">📉</a></li></ul></div>
         <div class="leaflet-sidebar-content">
             <div class="leaflet-sidebar-pane" id="home">
                 <h2 class="leaflet-sidebar-header">Live Seismic Data<span class="leaflet-sidebar-close">×</span></h2>
@@ -45,64 +45,13 @@
         </div>
     </div>
 
-    <div id="map"></div> ```
+    <div id="map"></div>
 
----
-
-### 2. Why the map is blank (The likely culprit)
-In your provided code, you have:
-`document.getElementById('station-data').innerHTML = ...` 
-**BUT** in your HTML, you didn't have a div with the id `station-data`. When JavaScript can't find that ID, it stops everything. 
-
-### 3. Final JavaScript Logic (The "Safe" Version)
-To be 100% sure, paste this at the very bottom of your script (replacing your current `stations.forEach` and `searchInput` sections):
-
-```javascript
-const allMarkers = [];
-
-stations.forEach(st => {
-    const marker = L.marker([st.lat, st.lon]).addTo(map);
-    marker.stationName = st.name.toLowerCase();
-    marker.stationID = st.id.toLowerCase();
-    allMarkers.push(marker);
-
-    marker.on('click', function() {
-        sidebar.open('home');
-        var drumURL = `http://hraun.vedur.is/ja/drumplot/drumplot/${st.url}_highpass_2.0.png`;
-        
-        // This targets the specific data div so the search bar stays visible
-        const dataDiv = document.getElementById('station-data');
-        if(dataDiv) {
-            dataDiv.innerHTML = `
-                <div style="padding:10px;">
-                    <h2 style="color:#c62828;">${st.name} (${st.id.toUpperCase()})</h2>
-                    <div class="coords-text">LAT: ${st.lat} | LON: ${st.lon}</div>
-                    <img src="${drumURL}" style="width:100%; border-radius:4px; margin-top:15px;">
-                    <br><br>
-                    <a href="${drumURL}" target="_blank" class="btn">VIEW FULL IMAGE</a>
-                </div>
-            `;
-        }
-    });
-});
-
-// Search Logic
-const searchInput = document.getElementById('stationSearch');
-if (searchInput) {
-    searchInput.addEventListener('input', function(e) {
-        const term = e.target.value.toLowerCase();
-        allMarkers.forEach(marker => {
-            const isMatch = marker.stationName.includes(term) || marker.stationID.includes(term);
-            if (isMatch) { marker.addTo(map); } 
-            else { map.removeLayer(marker); }
-        });
-    });
-}
-    
     <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/leaflet-sidebar-v2@3.2.3/js/leaflet-sidebar.min.js"></script>
 
     <script>
+        // 1. Initialize Map
         var map = L.map('map', { 
             zoomControl: false,
             minZoom: 5,
@@ -112,8 +61,17 @@ if (searchInput) {
 
         L.tileLayer('https://{s}.tile.opentopomap.org/{z}/{x}/{y}.png', { maxZoom: 17 }).addTo(map);
         L.control.zoom({ position: 'topright' }).addTo(map);
+
+        // 2. Initialize Sidebar & "Bring Back Markers" Logic
         var sidebar = L.control.sidebar({ container: 'sidebar' }).addTo(map);
 
+        sidebar.on('hide', function () {
+            allMarkers.forEach(marker => marker.addTo(map));
+            const searchInput = document.getElementById('stationSearch');
+            if (searchInput) searchInput.value = ''; 
+        });
+
+        // 3. Your Station Data
         var stations = [
             { id: "klv", name: "Kleifarvatn", lat: 63.91447, lon: -21.95979, url: "klv" },
             { id: "odf", name: "Ölkelduháls", lat: 63.94253, lon: -22.11324, url: "odf" },
@@ -212,69 +170,67 @@ if (searchInput) {
 
         const allMarkers = [];
 
-      stations.forEach(st => {
-    // 1. Create the blue marker
-    const marker = L.marker([st.lat, st.lon]).addTo(map);
+        // 4. Create Markers & Logic
+        stations.forEach(st => {
+            const marker = L.marker([st.lat, st.lon]).addTo(map);
 
-    // 2. Add the 3-letter station name as a permanent label
- // Add the 3-letter station name centered above the pin
-    marker.bindTooltip(st.id.toUpperCase(), {
-        permanent: true,
-        direction: 'top',      // Puts it above the pin
-        className: 'station-label',
-        offset: [0, 10],       // Centers it properly
-        opacity: 1             // Makes sure it's fully visible
-    });
+            marker.bindTooltip(st.id.toUpperCase(), {
+                permanent: true,
+                direction: 'top',
+                className: 'station-label',
+                offset: [0, -10]
+            });
 
-    // 3. Attach search data
-    marker.stationName = st.name.toLowerCase();
-    marker.stationID = st.id.toLowerCase();
-    allMarkers.push(marker);
+            marker.stationName = st.name.toLowerCase();
+            marker.stationID = st.id.toLowerCase();
+            allMarkers.push(marker);
 
-    // 4. Click Event
-    marker.on('click', function() {
-        sidebar.open('home');
-        var drumURL = `http://hraun.vedur.is/ja/drumplot/drumplot/${st.url}_highpass_2.0.png`;
-        
-        const dataDiv = document.getElementById('station-data');
-        if(dataDiv) {
-            dataDiv.innerHTML = `
-                <div style="padding:10px;">
-                    <h2 style="color:#c62828;">${st.name} (${st.id.toUpperCase()})</h2>
-                    <div class="coords-text">LAT: ${st.lat} | LON: ${st.lon}</div>
-                    <p style="margin:15px 0;">Live Drumplot (High-pass 2.0Hz):</p>
-                    <img src="${drumURL}" style="width:100%; border-radius:4px; box-shadow: 0 2px 5px rgba(0,0,0,0.2);">
-                    <br><br>
-                    <a href="${drumURL}" target="_blank" class="btn">VIEW FULL IMAGE</a>
-                </div>
-            `;
-        }
-    });
-});
+            marker.on('click', function() {
+                sidebar.open('home');
+                const timestamp = new Date().getTime();
+                const drumURL = `http://hraun.vedur.is/ja/drumplot/drumplot/${st.url}_highpass_2.0.png?t=${timestamp}`;
+                const timeString = new Date().toLocaleTimeString('en-GB');
+                
+                const dataDiv = document.getElementById('station-data');
+                if(dataDiv) {
+                    dataDiv.innerHTML = `
+                        <div style="padding:10px;">
+                            <h2 style="color:#c62828; margin-bottom:5px;">${st.name} (${st.id.toUpperCase()})</h2>
+                            <div class="coords-text">LAT: ${st.lat} | LON: ${st.lon}</div>
+                            <p style="margin:15px 0 5px 0; font-weight:bold;">Live Drumplot (2.0Hz):</p>
+                            <img id="drum-img" src="${drumURL}" style="width:100%; border-radius:4px; box-shadow: 0 2px 5px rgba(0,0,0,0.2);">
+                            <div style="font-size: 10px; color: #666; margin-top: 5px;">Last updated: ${timeString}</div>
+                            <div style="margin-top:15px; display: flex; gap: 8px;">
+                                <button onclick="updateImage('${st.url}')" class="btn" style="flex:1;">🔄 REFRESH</button>
+                                <a href="${drumURL}" target="_blank" class="btn" style="flex:1;">FULL SIZE</a>
+                            </div>
+                        </div>
+                    `;
+                }
+            });
+        });
 
+        // 5. Search Function
         const searchInput = document.getElementById('stationSearch');
         if (searchInput) {
             searchInput.addEventListener('input', function(e) {
                 const term = e.target.value.toLowerCase();
                 allMarkers.forEach(marker => {
                     const isMatch = marker.stationName.includes(term) || marker.stationID.includes(term);
-                    if (isMatch) {
-                        marker.addTo(map);
-                    } else {
-                        map.removeLayer(marker);
-                    }
+                    if (isMatch) { marker.addTo(map); } 
+                    else { map.removeLayer(marker); }
                 });
             });
         }
+
+        // 6. Refresh Helper
+        function updateImage(urlCode) {
+            const img = document.getElementById('drum-img');
+            if(img) {
+                const timestamp = new Date().getTime();
+                img.src = `http://hraun.vedur.is/ja/drumplot/drumplot/${urlCode}_highpass_2.0.png?t=${timestamp}`;
+            }
+        }
     </script>
-    function refreshDrumplot(stationUrl) {
-    const img = document.getElementById('drumplot-img');
-    if (img) {
-        // We add a timestamp (?t=...) to force the browser to fetch the newest image
-        const newUrl = `http://hraun.vedur.is/ja/drumplot/drumplot/${stationUrl}_highpass_2.0.png?t=${new Date().getTime()}`;
-        img.src = newUrl;
-        console.log("Refreshing image for: " + stationUrl);
-    }
-}
 </body>
 </html>
