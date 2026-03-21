@@ -25,6 +25,14 @@
             <div class="leaflet-sidebar-pane" id="home">
                 <h2 class="leaflet-sidebar-header">Live Seismic Data<span class="leaflet-sidebar-close">×</span></h2>
                 <div id="station-content" style="padding:15px;">
+                    <div id="station-content" style="padding:15px;">
+    <div style="margin-bottom: 20px;">
+        <input type="text" id="stationSearch" placeholder="Search station (e.g. LSK)..." 
+               style="width: 100%; padding: 10px; border-radius: 4px; border: 1px solid #ccc; background: #fff; color: #333;">
+    </div>
+    
+    <p id="default-text">Select a station on the map to begin monitoring.</p>
+</div>
                     <p>Select a station on the map to begin monitoring.</p>
                 </div>
             </div>
@@ -149,16 +157,54 @@
             
         
 
-        stations.forEach(function(st) {
-            var marker = L.circleMarker([st.lat, st.lon], {
-                radius: 8, fillColor: "#ff0000", color: "#fff", weight: 2, fillOpacity: 1
-            }).addTo(map);
+    // 1. Create the empty array BEFORE the loop (around line 159)
+const allMarkers = [];
 
-            L.marker([st.lat, st.lon], {
-    icon: L.divIcon({
-        className: 'transparent-label', 
-      html: `<div style="background:none; border:none; color:black; font-weight:bold; font-size:11px; white-space:nowrap; text-shadow: 1px 1px 0px white;">${st.id.toUpperCase()}</div>`,
-        iconAnchor: [-12, 8] 
+// 2. This is your line 160
+stations.forEach(station => {
+    const marker = L.marker([station.lat, station.lon]).addTo(map);
+    
+    // Add these two lines so the search bar knows what to look for
+    marker.stationName = station.name.toLowerCase();
+    marker.stationID = station.id.toLowerCase();
+
+    // Keep your existing click function inside here
+    marker.on('click', function() {
+        sidebar.open('home');
+        document.getElementById('station-content').innerHTML = `
+            <div style="padding:15px;">
+                <input type="text" id="stationSearch" placeholder="Search station (e.g. LSK)..." 
+                       style="width: 100%; padding: 10px; border-radius: 4px; border: 1px solid #ccc; margin-bottom:20px;">
+                <h3>${station.name} (${station.id.toUpperCase()})</h3>
+                <p><b>Coordinates:</b> ${station.lat}, ${station.lon}</p>
+                <img src="http://hraun.vedur.is/ja/drumplot/drumplot/${station.id}_highpass_2.0.png" 
+                     style="width:100%; height:auto;" alt="Seismic Drumplot">
+            </div>
+        `;
+        // Re-attach the search listener every time the sidebar content is rewritten
+        attachSearchListener(); 
+    });
+
+    allMarkers.push(marker); // Save to our list
+});
+
+// 3. Add the Search Logic Function below the loop
+function attachSearchListener() {
+    const searchInput = document.getElementById('stationSearch');
+    if (!searchInput) return;
+
+    searchInput.addEventListener('input', function(e) {
+        const term = e.target.value.toLowerCase();
+        allMarkers.forEach(marker => {
+            const isMatch = marker.stationName.includes(term) || marker.stationID.includes(term);
+            if (isMatch) {
+                marker.addTo(map);
+            } else {
+                map.removeLayer(marker);
+            }
+        });
+    });
+}   
     }),
     interactive: false
 }).addTo(map);
