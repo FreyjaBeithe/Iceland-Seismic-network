@@ -238,8 +238,8 @@ marker.on('click', function() {
                 </div>
             </div>`;
     
-});
-       });
+ });
+ });
  
         // 5. Search Function
         const searchInput = document.getElementById('stationSearch');
@@ -250,6 +250,7 @@ marker.on('click', function() {
                     const isMatch = marker.stationName.includes(term) || marker.stationID.includes(term);
                     if (isMatch) { marker.addTo(map); } 
                     else { map.removeLayer(marker); }
+                });
                 });
             }
         
