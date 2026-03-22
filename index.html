@@ -99,15 +99,16 @@
     <script src="https://cdn.jsdelivr.net/npm/leaflet-sidebar-v2@3.2.3/js/leaflet-sidebar.min.js"></script>
 
     <script>
-        // 1. Initialize Map
+       // 1. Initialize Map
         const allMarkers = [];
         var map = L.map('map', { 
             zoomControl: false,
-            minZoom: 5,
+            minZoom: 6, // 1. Setting a tighter minimum zoom
             scrollWheelZoom: true,
-            maxBounds: [[63.0, -25.0], [67.5, -13.0]],
+            // 2. We're defining a new, tighter bounding box
+            maxBounds: [[63.20, -24.80], [66.80, -13.20]],
             maxBoundsViscosity: 1.0
-        }).setView([64.90, -18.5], 6);
+        }).setView([64.90, -18.5], 7); // 3. Setting the initial zoom level to 7
 
         L.tileLayer('https://{s}.tile.opentopomap.org/{z}/{x}/{y}.png', { maxZoom: 17 }).addTo(map);
         L.control.scale({ imperial: false, position: 'bottomleft' }).addTo(map);
