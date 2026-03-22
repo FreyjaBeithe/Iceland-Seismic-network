@@ -104,12 +104,10 @@
     <script>
         // 1. Initialize Map
         const allMarkers = [];
-        var map = L.map('map', { 
+       var map = L.map('map', { 
             zoomControl: false,
             minZoom: 5,
-            scrollWheelZoom: true,      // Force the wheel ON
-            smoothWheelZoom: true,      // Makes it feel better
-            wheelPxPerZoomLevel: 120,   // Standard scroll speed
+            scrollWheelZoom: true,
             maxBounds: [[63.0, -25.0], [67.5, -13.0]],
             maxBoundsViscosity: 1.0
         }).setView([64.90, -18.5], 6);
