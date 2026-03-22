@@ -248,35 +248,37 @@
                     </div>`;
             });
         });
-// 5. Search Logic
+// 5. Search Function - Strict 3-Letter Match
 const searchInput = document.getElementById('stationSearch');
 
 if (searchInput) {
     searchInput.addEventListener('input', function(e) {
         const term = e.target.value.toLowerCase().trim();
-        if (term.length < 2) return;
 
-        let foundMatch = false;
+        // 1. If the box is empty, show all dots and stop
+        if (term.length === 0) {
+            allMarkers.forEach(m => m.addTo(map));
+            return;
+        }
 
-        // Start looking through markers
-        allMarkers.forEach(marker => {
-            // Check for EXACT 3-letter match first, then partial names
-            const isExactMatch = marker.stationID === term;
-            const isPartialMatch = marker.stationName.includes(term) || marker.stationID.includes(term);
-
-            if (isExactMatch || (!foundMatch && isPartialMatch)) {
-                marker.addTo(map);
-                if (!foundMatch) {
-                    map.setView(marker.getLatLng(), 10);
-                    marker.fire('click');
-                    foundMatch = true;
-                }
-            } else {
-                map.removeLayer(marker);
+        // 2. WAIT until exactly 3 letters are typed (the length of an ID)
+        if (term.length === 3) {
+            const match = allMarkers.find(m => m.stationID === term);
+            
+            if (match) {
+                // Found it! Show all dots, zoom to the one, and "click" it
+                allMarkers.forEach(m => m.addTo(map)); 
+                map.setView(match.getLatLng(), 10);
+                match.fire('click');
             }
-        }); // <--- This closes the allMarkers.forEach
-    }); // <--- This closes the addEventListener
-} // <--- This closes the if(searchInput)
+        } 
+        // 3. If they are still typing (1 or 2 letters), don't move the map yet
+        else {
+            return;
+        }
+    });
+}
+// END OF SCRIPT
  
     </script>
 </body>
