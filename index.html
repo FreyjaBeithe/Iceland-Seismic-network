@@ -15,28 +15,33 @@
         .leaflet-tooltip-top:before, .leaflet-tooltip-bottom:before, 
         .leaflet-tooltip-left:before, .leaflet-tooltip-right:before { display: none !important; }
 
-       .station-label {
-    background: transparent !important;
-    border: none !important;
-    box-shadow: none !important;
-    color: #ffffff; /* We switch to White text for better visibility */
-    font-weight: bold;
-    font-size: 11px;
-    /* This creates a thin black outline instead of a blurry white shadow */
-    text-shadow: 
-        -1px -1px 0 #000,  
-         1px -1px 0 #000,
-        -1px  1px 0 #000,
-         1px  1px 0 #000;
-    text-align: center;
-}
-        }
-
+     /* 1. The Red Dot itself */
         .red-dot {
-            background-color: #ff0000;
+            background-color: #ff0000 !important; /* Forces red */
             border: 1px solid #ffffff;
             border-radius: 50%;
-            box-shadow: 0 0 3px rgba(0,0,0,0.5);
+            width: 8px !important;
+            height: 8px !important;
+            box-shadow: 0 0 3px rgba(0,0,0,0.8);
+            z-index: 500 !important; /* Keeps the dot visible */
+        }
+
+        /* 2. The Station Label (The Text) */
+        .station-label {
+            background: transparent !important;
+            border: none !important;
+            box-shadow: none !important;
+            color: #ffffff !important; 
+            font-weight: bold;
+            font-size: 11px;
+            /* Sharp black outline for Satellite/Topo clarity */
+            text-shadow: 
+                -1px -1px 0 #000,  
+                 1px -1px 0 #000,
+                -1px  1px 0 #000,
+                 1px  1px 0 #000;
+            text-align: center;
+            pointer-events: none; /* Let clicks pass through to the dot */
         }
 
      .btn { 
