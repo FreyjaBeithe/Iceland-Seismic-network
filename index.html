@@ -252,34 +252,40 @@
                     </div>`;
             });
         });
-// 5. Search Function - Strict 3-Letter Match
 const searchInput = document.getElementById('stationSearch');
+const clearBtn = document.getElementById('clearSearch');
 
 if (searchInput) {
+    // 1. Monitor typing to show/hide 'X' and perform search
     searchInput.addEventListener('input', function(e) {
         const term = e.target.value.toLowerCase().trim();
+        
+        // Show the 'X' only if there is text
+        clearBtn.style.display = term.length > 0 ? 'block' : 'none';
 
-        // 1. If the box is empty, show all dots and stop
+        // If the box is empty, show all dots
         if (term.length === 0) {
             allMarkers.forEach(m => m.addTo(map));
             return;
         }
 
-        // 2. WAIT until exactly 3 letters are typed (the length of an ID)
+        // WAIT until exactly 3 letters are typed
         if (term.length === 3) {
             const match = allMarkers.find(m => m.stationID === term);
-            
             if (match) {
-                // Found it! Show all dots, zoom to the one, and "click" it
-                allMarkers.forEach(m => m.addTo(map)); 
+                allMarkers.forEach(m => m.addTo(map));
                 map.setView(match.getLatLng(), 10);
                 match.fire('click');
             }
-        } 
-        // 3. If they are still typing (1 or 2 letters), don't move the map yet
-        else {
-            return;
         }
+    });
+
+    // 2. The "Master Reset" when the 'X' is clicked
+    clearBtn.addEventListener('click', function() {
+        searchInput.value = ''; // Clear text
+        this.style.display = 'none'; // Hide 'X'
+        allMarkers.forEach(m => m.addTo(map)); // Show all dots
+        map.setView([63.9, -22.3], 10); // Reset map zoom
     });
 }
 // END OF SCRIPT
