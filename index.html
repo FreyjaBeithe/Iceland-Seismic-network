@@ -296,6 +296,7 @@ if (searchInput) {
 clearBtn.addEventListener('click', function() {
     searchInput.value = ''; 
     this.style.display = 'none';
+    sidebar.close();
     
     // 1. Show all markers
     allMarkers.forEach(m => m.addTo(map)); 
