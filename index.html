@@ -280,13 +280,17 @@ if (searchInput) {
         }
     });
 
-    // 2. The "Master Reset" when the 'X' is clicked
-    clearBtn.addEventListener('click', function() {
-        searchInput.value = ''; // Clear text
-        this.style.display = 'none'; // Hide 'X'
-        allMarkers.forEach(m => m.addTo(map)); // Show all dots
-        map.setView([63.9, -22.3], 10); // Reset map zoom
-    });
+   // 2. The "Master Reset" when the 'X' is clicked
+clearBtn.addEventListener('click', function() {
+    searchInput.value = ''; 
+    this.style.display = 'none';
+    
+    // 1. Show all markers
+    allMarkers.forEach(m => m.addTo(map)); 
+    
+    // 2. Zoom out to show Iceland (Center: 64.9, -19.0 | Zoom: 7)
+    map.setView([64.9, -19.0], 7); 
+});
 }
 // END OF SCRIPT
  
