@@ -240,15 +240,27 @@
                 offset: [22, 18]
             });
 
-            marker.on('click', function() {
+           marker.on('click', function() {
                 sidebar.open('home');
+                
+                // Fetch specific station URLs (using lowercase IDs)
                 const drumURL = `http://hraun.vedur.is/ja/drumplot/drumplot/${st.url}_highpass_2.0.png?t=${new Date().getTime()}`;
+                const tremorURL = `http://hraun.vedur.is/ja/oroi/${st.url}.gif?t=${new Date().getTime()}`;
+                
                 document.getElementById('station-data').innerHTML = `
                     <div style="padding:10px;">
                         <h2 style="color:#c62828; margin-bottom:5px;">${st.name} (${st.id.toUpperCase()})</h2>
                         <div class="coords-text">LAT: ${st.lat} | LON: ${st.lon}</div>
-                        <p style="margin:15px 0;">Select below to view the live 2.0Hz drumplot.</p>
-                        <a href="${drumURL}" target="_blank" class="btn">DRUM PLOT</a>
+                        
+                        <p style="margin:15px 0 8px 0; font-weight: bold; color: #ddd;">Seismic Monitoring:</p>
+                        
+                        <a href="${drumURL}" target="_blank" class="btn" style="background-color: #c62828; color: white !important;">📈 VIEW DRUM PLOT</a>
+                        
+                        <a href="${tremorURL}" target="_blank" class="btn" style="background-color: #8e0000; color: white !important; margin-top: 10px;">📉 VIEW TREMOR CHART</a>
+                        
+                        <p style="font-size: 10px; color: #888; margin-top: 15px; line-height: 1.4;">
+                            Charts open in a new tab. Refresh the map or re-click the station to pull the latest live data.
+                        </p>
                     </div>`;
             });
         });
