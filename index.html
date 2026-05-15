@@ -90,17 +90,20 @@
             font-size: 20px;
         }
 
-   /* Enhanced GPS Triangle for better visibility */
+/* Sharp, professional-sized GPS markers */
 .gps-triangle {
     width: 0;
     height: 0;
-    /* Adjusted borders to fit the new iconSize */
-    border-left: 9px solid transparent;
-    border-right: 9px solid transparent;
-    border-bottom: 16px solid #00ff00; 
-    /* This ensures the triangle doesn't "leak" out of its container */
-    margin: 0 auto;
-    filter: drop-shadow(0 0 1px #000) drop-shadow(0 0 2px #000);
+    /* Small but sharp: 6px sides, 10px tall */
+    border-left: 6px solid transparent;
+    border-right: 6px solid transparent;
+    border-bottom: 10px solid #00ff00; 
+    
+    /* Keep the shadow tight so it doesn't look blurry */
+    filter: drop-shadow(0 0 1px #000);
+    
+    /* This stops the "cutting off" at the top */
+    margin-top: 0px; 
     z-index: 1000 !important;
 }
     </style>
@@ -322,7 +325,7 @@ stations.forEach(st => {
     let icon;
     // 1. Assign the correct icon based on type
     if (st.type === 'gps') {
-        icon = L.divIcon({ className: 'gps-triangle', iconSize: [18, 16], iconAnchor: [9, 16] });
+        icon = L.divIcon({ className: 'gps-triangle', iconSize: [12, 10], iconAnchor: [6, 10] });
     } else {
         icon = L.divIcon({ className: 'red-dot', iconSize: [8, 8], iconAnchor: [4, 4] });
     }
