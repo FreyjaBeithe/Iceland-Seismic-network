@@ -140,8 +140,6 @@
 
         </div> </div> ```
 
-**Let me know once you've got that pane tucked in!** 🫡✨☕
-
     <div id="map"></div>
 
    <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
@@ -173,6 +171,34 @@
         // 2. Initialize Sidebar
         var sidebar = L.control.sidebar({ container: 'sidebar' }).addTo(map);
 
+        // --- THE MAP FILTER LOGIC ---
+// This watches for when you click the tab icons and clears the map accordingly
+sidebar.on('content', function (e) {
+    if (e.id === 'gps') {
+        // --- GPS TAB OPENED: Show ONLY Triangles ---
+        allMarkers.forEach(marker => {
+            // Find the station data that matches this marker
+            const station = stations.find(s => s.id.toLowerCase() === marker.stationID);
+            
+            if (station && station.type === 'gps') {
+                marker.addTo(map); // Keep/Add the Green Triangle
+            } else {
+                map.removeLayer(marker); // Remove the Red Seismic Dot
+            }
+        });
+    } else if (e.id === 'home') {
+        // --- SEISMIC TAB OPENED: Show ONLY Red Dots ---
+        allMarkers.forEach(marker => {
+            const station = stations.find(s => s.id.toLowerCase() === marker.stationID);
+            
+            if (station && station.type === 'gps') {
+                map.removeLayer(marker); // Remove the Green Triangle
+            } else {
+                marker.addTo(map); // Keep/Add the Red Seismic Dot
+            }
+        });
+    }
+});
         function resetMap() {
             const searchInput = document.getElementById('stationSearch');
             if (searchInput) searchInput.value = '';
