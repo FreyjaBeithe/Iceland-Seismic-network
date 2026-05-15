@@ -94,13 +94,13 @@
 .gps-triangle {
     width: 0;
     height: 0;
-    border-left: 8px solid transparent;
-    border-right: 8px solid transparent;
-    /* This vibrant lime green cuts through the topo map colors */
-    border-bottom: 14px solid #00ff00; 
-    /* Adding a thick dark shadow gives it a "3D" lift and an outline effect */
-    filter: drop-shadow(0 0 1px #000) 
-            drop-shadow(0 0 2px #000);
+    /* Adjusted borders to fit the new iconSize */
+    border-left: 9px solid transparent;
+    border-right: 9px solid transparent;
+    border-bottom: 16px solid #00ff00; 
+    /* This ensures the triangle doesn't "leak" out of its container */
+    margin: 0 auto;
+    filter: drop-shadow(0 0 1px #000) drop-shadow(0 0 2px #000);
     z-index: 1000 !important;
 }
     </style>
