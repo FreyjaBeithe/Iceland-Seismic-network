@@ -216,10 +216,9 @@
 
         // --- THE MAP FILTER LOGIC ---
 sidebar.on('content', function (e) {
-    // Hide the welcome overlay as soon as a tab is opened
+    // Hide the welcome overlay as soon as a tab is opened then appear when closed
     const overlay = document.getElementById('welcome-overlay');
     if (overlay) overlay.style.opacity = '0';
-    setTimeout(() => { if(overlay) overlay.remove(); }, 500); // Remove from code after fade
     if (e.id === 'gps') {
        
         // --- GPS TAB OPENED: Show ONLY Triangles ---
@@ -255,6 +254,8 @@ sidebar.on('content', function (e) {
     
     // Snap back to the main Iceland view
     map.setView([64.9, -18.5], 7);
+     const overlay = document.getElementById('welcome-overlay');
+    if (overlay) overlay.style.opacity = '1';      
 }
         sidebar.on('closing', resetMap);
 
