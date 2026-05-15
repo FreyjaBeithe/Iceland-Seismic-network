@@ -288,52 +288,57 @@
      ];
              
  // 4. Create Markers and Sidebar Content
-        stations.forEach(st => {
-            var redDotIcon = L.divIcon({ className: 'red-dot', iconSize: [8, 8], iconAnchor: [4, 4] });
-            const marker = L.marker([st.lat, st.lon], { icon: redDotIcon }).addTo(map);
+// Replace your old stations.forEach loop with this:
+stations.forEach(st => {
+    let icon;
+    // 1. Assign the correct icon based on type
+    if (st.type === 'gps') {
+        icon = L.divIcon({ className: 'gps-triangle', iconSize: [14, 12], iconAnchor: [7, 12] });
+    } else {
+        icon = L.divIcon({ className: 'red-dot', iconSize: [8, 8], iconAnchor: [4, 4] });
+    }
+    
+    const marker = L.marker([st.lat, st.lon], { icon: icon }).addTo(map);
+    marker.stationID = st.id.toLowerCase();
+    allMarkers.push(marker);
+
+    marker.bindTooltip(st.id.toUpperCase(), {
+        permanent: true,
+        direction: 'top',
+        className: 'station-label',
+        offset: [22, 22]
+    });
+
+    marker.on('click', function() {
+        if (st.type === 'gps') {
+            // --- OPEN GPS TAB ---
+            sidebar.open('gps');
+            const gpsURL = `https://vmkerfi.vedur.is/gps/station_plot.php?station=${st.url}&type=vertical`;
+            document.getElementById('gps-data').innerHTML = `
+                <div style="padding:10px;">
+                    <h2 style="color:#2e7d32; margin-bottom:5px;">${st.name} (${st.id.toUpperCase()})</h2>
+                    <div class="coords-text" style="border-left-color: #2e7d32; color: #444; font-weight: bold;">LAT: ${st.lat} | LON: ${st.lon}</div>
+                    <p style="margin:20px 0 8px 0; font-weight: 800; color: #222; text-transform: uppercase; font-size: 11px; letter-spacing: 0.5px;">📈 Vertical Uplift</p>
+                    <a href="${gpsURL}" target="_blank"><img src="${gpsURL}" alt="GPS Uplift Chart"></a>
+                </div>`;
+        } else {
+            // --- OPEN SEISMIC TAB ---
+            sidebar.open('home');
+            const secureDrumURL = `https://wsrv.nl/?url=http://hraun.vedur.is/ja/drumplot/drumplot/${st.url}_highpass_2.0.png&noproxy`;
+            const secureTremorURL = `https://wsrv.nl/?url=http://hraun.vedur.is/ja/oroi/${st.url}.gif&noproxy`;
             
-            marker.stationID = st.id.toLowerCase();
-            allMarkers.push(marker);
-
-            marker.bindTooltip(st.id.toUpperCase(), {
-                permanent: true,
-                direction: 'top',
-                className: 'station-label',
-                offset: [22, 22]
-            });
-
-            marker.on('click', function() {
-                sidebar.open('home');
-                const secureDrumURL = `https://wsrv.nl/?url=http://hraun.vedur.is/ja/drumplot/drumplot/${st.url}_highpass_2.0.png&noproxy`;
-                const secureTremorURL = `https://wsrv.nl/?url=http://hraun.vedur.is/ja/oroi/${st.url}.gif&noproxy`;
-                
-document.getElementById('station-data').innerHTML = `
-    <div style="padding:10px;">
-        <h2 style="color:#c62828; margin-bottom:5px;">${st.name} (${st.id.toUpperCase()})</h2>
-        <div class="coords-text" style="color: #444; font-weight: bold;">LAT: ${st.lat} | LON: ${st.lon}</div>
-        
-       <p style="margin:5px 0 2px 0; font-weight: 800; color: #222; text-transform: uppercase; font-size: 11px; letter-spacing: 0.5px;">
-    🌋 Volcanic Tremor (Órói)
-</p>
-        <a href="${secureTremorURL}" target="_blank">
-            <img src="${secureTremorURL}" alt="Tremor Chart">
-        </a>
-        <p style="font-size: 12px; color: #555; text-align: center; margin-top: 5px; font-weight: 600;">
-            (Click image for full size)
-        </p>
-
-<p style="margin:12px 0 2px 0; font-weight: 800; color: #222; text-transform: uppercase; font-size: 11px; letter-spacing: 0.5px;">
-    📉 Drumplot (Highpass)
-</p>
-        <a href="${secureDrumURL}" target="_blank">
-            <img src="${secureDrumURL}" alt="Drum Plot">
-        </a>
-        <p style="font-size: 12px; color: #555; text-align: center; margin-top: 5px; font-weight: 600;">
-            (Click image for full size)
-        </p>
-    </div>`;
-            });
-        });
+            document.getElementById('station-data').innerHTML = `
+                <div style="padding:10px;">
+                    <h2 style="color:#c62828; margin-bottom:5px;">${st.name} (${st.id.toUpperCase()})</h2>
+                    <div class="coords-text" style="color: #444; font-weight: bold;">LAT: ${st.lat} | LON: ${st.lon}</div>
+                    <p style="margin:5px 0 2px 0; font-weight: 800; color: #222; text-transform: uppercase; font-size: 11px; letter-spacing: 0.5px;">🌋 Volcanic Tremor (Órói)</p>
+                    <a href="${secureTremorURL}" target="_blank"><img src="${secureTremorURL}" alt="Tremor Chart"></a>
+                    <p style="margin:12px 0 2px 0; font-weight: 800; color: #222; text-transform: uppercase; font-size: 11px; letter-spacing: 0.5px;">📉 Drumplot (Highpass)</p>
+                    <a href="${secureDrumURL}" target="_blank"><img src="${secureDrumURL}" alt="Drum Plot"></a>
+                </div>`;
+        }
+    });
+});
 
         // 5. Search Logic
         const searchInput = document.getElementById('stationSearch');
