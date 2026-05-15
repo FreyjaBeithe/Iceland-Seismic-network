@@ -111,29 +111,29 @@
 /* Welcome Prompt Styling */
 #welcome-overlay {
     position: absolute;
-    top: 50%;
-    left: 50%;
-    transform: translate(-50%, -50%);
+    /* Position it near the top-left tabs */
+    top: 20px;
+    left: 60px; 
     z-index: 3000;
-    background: rgba(255, 255, 255, 0.9);
-    padding: 20px 30px;
-    border-radius: 8px;
-    box-shadow: 0 4px 15px rgba(0,0,0,0.3);
-    text-align: center;
+    background: rgba(255, 255, 255, 0.95);
+    padding: 12px 20px;
+    border-radius: 6px;
+    box-shadow: 0 4px 12px rgba(0,0,0,0.2);
+    text-align: left; /* Changed to left-aligned for a cleaner look */
     pointer-events: none;
     transition: opacity 0.5s ease;
-    border-top: 4px solid #c62828;
+    border-left: 5px solid #c62828; /* Changed stripe to the side for a "tag" look */
 }
 
 #welcome-overlay h1 {
-    margin: 0 0 10px 0;
-    font-size: 18px;
+    margin: 0;
+    font-size: 16px;
     color: #333;
 }
 
 #welcome-overlay p {
-    margin: 0;
-    font-size: 14px;
+    margin: 4px 0 0 0;
+    font-size: 13px;
     color: #666;
     font-weight: 500;
 }
