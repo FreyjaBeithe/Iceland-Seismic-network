@@ -333,22 +333,34 @@ stations.forEach(st => {
         offset: [22, 22]
     });
 
-    marker.on('click', function() {
-        if (st.type === 'gps') {
-            // --- OPEN GPS TAB ---
-            sidebar.open('gps');
-            // Replace the gpsURL and the img src lines in your click function:
-const secureGpsURL = `https://wsrv.nl/?url=http://vmkerfi.vedur.is/gps/station_plot.php?station=${st.url.toUpperCase()}%26type=vertical&output=png&noproxy`;
-document.getElementById('gps-data').innerHTML = `
-    <div style="padding:10px;">
-        <h2 style="color:#2e7d32; margin-bottom:5px;">${st.name} (${st.id.toUpperCase()})</h2>
-        <div class="coords-text" style="border-left-color: #2e7d32; color: #444; font-weight: bold;">LAT: ${st.lat} | LON: ${st.lon}</div>
-        <p style="margin:20px 0 8px 0; font-weight: 800; color: #222; text-transform: uppercase; font-size: 11px; letter-spacing: 0.5px;">📈 Vertical Uplift</p>
-        <a href="${secureGpsURL}" target="_blank">
-            <img src="${secureGpsURL}" alt="GPS Uplift Chart">
-        </a>
-        <p style="font-size: 11px; color: #555; text-align: center; margin-top: 8px; font-weight: 600;">(Click chart for full history)</p>
-    </div>`;
+ marker.on('click', function() {
+    if (st.type === 'gps') {
+        sidebar.open('gps');
+        
+        // Using the new CDN format you discovered
+        const stationID = st.url.toUpperCase();
+        const gpsImageURL = `https://cdn.vedur.is/gps/locations/volcanos/reykjanes/graphs/24h/${stationID}-plate-90d.png`;
+        
+        document.getElementById('gps-data').innerHTML = `
+            <div style="padding:10px;">
+                <h2 style="color:#2e7d32; margin-bottom:5px;">${st.name} (${stationID})</h2>
+                <div class="coords-text" style="border-left-color: #2e7d32; color: #444; font-weight: bold;">
+                    LAT: ${st.lat} | LON: ${st.lon}
+                </div>
+                <p style="margin:20px 0 8px 0; font-weight: 800; color: #222; text-transform: uppercase; font-size: 11px; letter-spacing: 0.5px;">📈 90-Day Vertical Displacement</p>
+                
+                <a href="${gpsImageURL}" target="_blank">
+                    <img src="${gpsImageURL}" 
+                         alt="GPS Displacement Chart" 
+                         style="width:100%; border:1px solid #ccc; background: white;">
+                </a>
+                
+                <p style="font-size: 11px; color: #555; text-align: center; margin-top: 8px; font-weight: 600;">
+                    (Click chart to enlarge)
+                </p>
+            </div>`;
+    }
+});
         } else {
             // --- OPEN SEISMIC TAB ---
             sidebar.open('home');
