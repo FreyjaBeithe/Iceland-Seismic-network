@@ -338,8 +338,7 @@ stations.forEach(st => {
             // --- OPEN GPS TAB ---
             sidebar.open('gps');
             // Replace the gpsURL and the img src lines in your click function:
-const secureGpsURL = `https://wsrv.nl/?url=http://vmkerfi.vedur.is/gps/station_plot.php?station=${st.url.toUpperCase()}&type=vertical&noproxy`;
-
+const secureGpsURL = `https://wsrv.nl/?url=http://vmkerfi.vedur.is/gps/station_plot.php?station=${st.url.toUpperCase()}%26type=vertical&output=png&noproxy`;
 document.getElementById('gps-data').innerHTML = `
     <div style="padding:10px;">
         <h2 style="color:#2e7d32; margin-bottom:5px;">${st.name} (${st.id.toUpperCase()})</h2>
