@@ -15,22 +15,23 @@
         .leaflet-tooltip-top:before, .leaflet-tooltip-bottom:before, 
         .leaflet-tooltip-left:before, .leaflet-tooltip-right:before { display: none !important; }
 
-  /* Smaller, sharper charts to fit the screen */
+/* Clean, sharp, and perfectly sized */
         .leaflet-sidebar-content img {
             display: block;
-            margin: 5px auto; /* Reduced margin */
-            width: auto;
+            margin: 8px auto;
+            /* 1. Remove the forced height to kill the black bars */
+            width: 380px; 
             max-width: 95%;
-            height: 280px;    /* Forced height to keep things compact */
-            object-fit: contain; 
-            border: 1px solid #444;
-            background-color: #000;
+            height: auto;
+            /* 2. Keep it sharp */
+            image-rendering: auto;
+            border: 1px solid #ddd;
+            background-color: #fff; /* Match the sidebar background */
         }
 
-        /* Tighten up the sidebar padding */
-        .leaflet-sidebar-content {
-            padding: 10px 15px !important;
-        }
+        /* Tighten the vertical spacing between elements */
+        .leaflet-sidebar-content h2 { margin-top: 0; }
+        .leaflet-sidebar-content p { margin: 4px 0 !important; }
         
 
      /* 1. The Red Dot itself */
