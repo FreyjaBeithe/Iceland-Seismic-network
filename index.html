@@ -15,19 +15,21 @@
         .leaflet-tooltip-top:before, .leaflet-tooltip-bottom:before, 
         .leaflet-tooltip-left:before, .leaflet-tooltip-right:before { display: none !important; }
 
-     /* Clean and Simple: No more digital blur */
+  /* Smaller, sharper charts to fit the screen */
         .leaflet-sidebar-content img {
             display: block;
-            margin: 15px auto;
-            /* 1. Set a fixed width that is close to the real image size */
-            width: 420px; 
-            max-width: 98%; /* Ensures it fits on smaller screens */
-            height: auto;
-            /* 2. Standard rendering (removes the "jagged" look) */
-            image-rendering: auto;
-            /* 3. A subtle border for contrast */
-            border: 1px solid #555;
+            margin: 5px auto; /* Reduced margin */
+            width: auto;
+            max-width: 95%;
+            height: 280px;    /* Forced height to keep things compact */
+            object-fit: contain; 
+            border: 1px solid #444;
             background-color: #000;
+        }
+
+        /* Tighten up the sidebar padding */
+        .leaflet-sidebar-content {
+            padding: 10px 15px !important;
         }
         
 
