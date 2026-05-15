@@ -324,7 +324,7 @@ stations.forEach(st => {
         icon = L.divIcon({ className: 'red-dot', iconSize: [8, 8], iconAnchor: [4, 4] });
     }
     
-    const marker = L.marker([st.lat, st.lon], { icon: icon }).addTo(map);
+    const marker = L.marker([st.lat, st.lon], { icon: icon });
     marker.stationID = st.id.toLowerCase();
     allMarkers.push(marker);
 
