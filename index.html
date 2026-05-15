@@ -344,14 +344,19 @@ stations.forEach(st => {
         if (st.type === 'gps') {
             // --- OPEN GPS TAB ---
             sidebar.open('gps');
-            const gpsURL = `https://vmkerfi.vedur.is/gps/station_plot.php?station=${st.url}&type=vertical`;
-            document.getElementById('gps-data').innerHTML = `
-                <div style="padding:10px;">
-                    <h2 style="color:#2e7d32; margin-bottom:5px;">${st.name} (${st.id.toUpperCase()})</h2>
-                    <div class="coords-text" style="border-left-color: #2e7d32; color: #444; font-weight: bold;">LAT: ${st.lat} | LON: ${st.lon}</div>
-                    <p style="margin:20px 0 8px 0; font-weight: 800; color: #222; text-transform: uppercase; font-size: 11px; letter-spacing: 0.5px;">📈 Vertical Uplift</p>
-                    <a href="${gpsURL}" target="_blank"><img src="${gpsURL}" alt="GPS Uplift Chart"></a>
-                </div>`;
+            // Replace the gpsURL and the img src lines in your click function:
+const secureGpsURL = `https://wsrv.nl/?url=http://vmkerfi.vedur.is/gps/station_plot.php?station=${st.url.toUpperCase()}&type=vertical&noproxy`;
+
+document.getElementById('gps-data').innerHTML = `
+    <div style="padding:10px;">
+        <h2 style="color:#2e7d32; margin-bottom:5px;">${st.name} (${st.id.toUpperCase()})</h2>
+        <div class="coords-text" style="border-left-color: #2e7d32; color: #444; font-weight: bold;">LAT: ${st.lat} | LON: ${st.lon}</div>
+        <p style="margin:20px 0 8px 0; font-weight: 800; color: #222; text-transform: uppercase; font-size: 11px; letter-spacing: 0.5px;">📈 Vertical Uplift</p>
+        <a href="${secureGpsURL}" target="_blank">
+            <img src="${secureGpsURL}" alt="GPS Uplift Chart">
+        </a>
+        <p style="font-size: 11px; color: #555; text-align: center; margin-top: 8px; font-weight: 600;">(Click chart for full history)</p>
+    </div>`;
         } else {
             // --- OPEN SEISMIC TAB ---
             sidebar.open('home');
