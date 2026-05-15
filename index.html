@@ -88,7 +88,10 @@
 
     <div id="sidebar" class="leaflet-sidebar collapsed">
         <div class="leaflet-sidebar-tabs">
-            <ul role="tablist"><li><a href="#home" role="tab">📉</a></li></ul>
+           <ul role="tablist">
+    <li><a href="#home" role="tab">📈</a></li>
+    <li><a href="#gps" role="tab"><i class="fa fa-location-arrow"></i></a></li>
+</ul>
         </div>
         <div class="leaflet-sidebar-content">
             <div class="leaflet-sidebar-pane" id="home">
@@ -101,7 +104,17 @@
     <button id="clearSearch" title="Clear Search" 
             style="position: absolute; right: 10px; background: none; border: none; color: #888; cursor: pointer; font-size: 18px; display: none;">✕</button>
 </div>
-
+<div class="leaflet-sidebar-pane" id="gps">
+    <h2 class="leaflet-sidebar-header" style="background-color: #2e7d32;">
+        GPS Deformation (Uplift)
+        <span class="leaflet-sidebar-close"><i class="fa fa-caret-left"></i></span>
+    </h2>
+    <div id="gps-data" style="padding:15px;">
+        <p style="color: #444; font-weight: bold; margin-top: 20px; text-align: center;">
+            Select a GPS station on the map to begin monitoring.
+        </p>
+    </div>
+</div>
                   
 
                     <div id="station-data">
