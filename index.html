@@ -272,7 +272,6 @@ L.control.layers(baseMaps).addTo(map);
 marker.on('click', function() {
     sidebar.open('home');
     
-    // Create the secure proxy links
     const secureDrumURL = `https://wsrv.nl/?url=http://hraun.vedur.is/ja/drumplot/drumplot/${st.url}_highpass_2.0.png&noproxy`;
     const secureTremorURL = `https://wsrv.nl/?url=http://hraun.vedur.is/ja/oroi/${st.url}.gif&noproxy`;
     
@@ -282,17 +281,18 @@ marker.on('click', function() {
             <div class="coords-text">LAT: ${st.lat} | LON: ${st.lon}</div>
             
             <p style="margin:15px 0 5px 0; font-weight: bold; color: #ddd;">Live Tremor Chart:</p>
-            <img src="${secureTremorURL}" style="width:100%; border:1px solid #444; border-radius:4px; margin-bottom:10px;" alt="Loading tremor...">
+            <a href="${secureTremorURL}" target="_blank" title="Click for full size">
+                <img src="${secureTremorURL}" alt="Tremor Chart">
+            </a>
+            <p style="font-size: 10px; color: #888; text-align: center; margin-top: -10px;">(Click image for full size)</p>
 
-            <p style="margin:10px 0 5px 0; font-weight: bold; color: #ddd;">Live Drum Plot:</p>
-            <img src="${secureDrumURL}" style="width:100%; border:1px solid #444; border-radius:4px; margin-bottom:10px;" alt="Loading drumplot...">
-            
-            <hr style="border:0; border-top:1px solid #444; margin:15px 0;">
-            
-            <a href="${secureDrumURL}" target="_blank" class="btn" style="background-color: #c62828; color: white !important;">🔍 ENLARGE DRUM PLOT</a>
-            <a href="${secureTremorURL}" target="_blank" class="btn" style="background-color: #8e0000; color: white !important; margin-top: 10px;">🔍 ENLARGE TREMOR CHART</a>
+            <p style="margin:20px 0 5px 0; font-weight: bold; color: #ddd;">Live Drum Plot:</p>
+            <a href="${secureDrumURL}" target="_blank" title="Click for full size">
+                <img src="${secureDrumURL}" alt="Drum Plot">
+            </a>
+            <p style="font-size: 10px; color: #888; text-align: center; margin-top: -10px;">(Click image for full size)</p>
         </div>`;
-});         
+});
         });
 const searchInput = document.getElementById('stationSearch');
 const clearBtn = document.getElementById('clearSearch');
