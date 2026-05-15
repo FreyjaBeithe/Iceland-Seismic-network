@@ -82,6 +82,22 @@
         
         /* Ensure sidebar is above map */
         .leaflet-sidebar { z-index: 2000 !important; }
+
+       /* Styling for the GPS icon in the tab list */
+        .fa-location-arrow {
+            color: #2e7d32; /* Deep GPS Green */
+            font-size: 20px;
+        }
+
+        /* 2. Added Green Triangle Style for the map markers */
+        .gps-triangle {
+            width: 0;
+            height: 0;
+            border-left: 7px solid transparent;
+            border-right: 7px solid transparent;
+            border-bottom: 12px solid #2e7d32;
+            filter: drop-shadow(1px 1px 1px rgba(0,0,0,0.5));
+        } 
     </style>
 </head>
 <body>
