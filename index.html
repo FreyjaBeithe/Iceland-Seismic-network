@@ -265,29 +265,30 @@ L.control.layers(baseMaps).addTo(map);
                 offset: [22, 22]
             });
 
-           marker.on('click', function() {
-                sidebar.open('home');
-                
-                // Fetch specific station URLs (using lowercase IDs)
-                const drumURL = `http://hraun.vedur.is/ja/drumplot/drumplot/${st.url}_highpass_2.0.png?t=${new Date().getTime()}`;
-                const tremorURL = `http://hraun.vedur.is/ja/oroi/${st.url}.gif?t=${new Date().getTime()}`;
-                
-                document.getElementById('station-data').innerHTML = `
-                    <div style="padding:10px;">
-                        <h2 style="color:#c62828; margin-bottom:5px;">${st.name} (${st.id.toUpperCase()})</h2>
-                        <div class="coords-text">LAT: ${st.lat} | LON: ${st.lon}</div>
-                        
-                        <p style="margin:15px 0 8px 0; font-weight: bold; color: #ddd;">Seismic Monitoring:</p>
-                        
-                        <a href="${drumURL}" target="_blank" class="btn" style="background-color: #c62828; color: white !important;">📈 VIEW DRUM PLOT</a>
-                        
-                        <a href="${tremorURL}" target="_blank" class="btn" style="background-color: #8e0000; color: white !important; margin-top: 10px;">📉 VIEW TREMOR CHART</a>
-                        
-                        <p style="font-size: 10px; color: #888; margin-top: 15px; line-height: 1.4;">
-                            Charts open in a new tab. Refresh the map or re-click the station to pull the latest live data.
-                        </p>
-                    </div>`;
-            });
+marker.on('click', function() {
+    sidebar.open('home');
+    
+    // Create the secure proxy links
+    const secureDrumURL = `https://wsrv.nl/?url=http://hraun.vedur.is/ja/drumplot/drumplot/${st.url}_highpass_2.0.png&noproxy`;
+    const secureTremorURL = `https://wsrv.nl/?url=http://hraun.vedur.is/ja/oroi/${st.url}.gif&noproxy`;
+    
+    document.getElementById('station-data').innerHTML = `
+        <div style="padding:10px;">
+            <h2 style="color:#c62828; margin-bottom:5px;">${st.name} (${st.id.toUpperCase()})</h2>
+            <div class="coords-text">LAT: ${st.lat} | LON: ${st.lon}</div>
+            
+            <p style="margin:15px 0 5px 0; font-weight: bold; color: #ddd;">Live Tremor Chart:</p>
+            <img src="${secureTremorURL}" style="width:100%; border:1px solid #444; border-radius:4px; margin-bottom:10px;" alt="Loading tremor...">
+
+            <p style="margin:10px 0 5px 0; font-weight: bold; color: #ddd;">Live Drum Plot:</p>
+            <img src="${secureDrumURL}" style="width:100%; border:1px solid #444; border-radius:4px; margin-bottom:10px;" alt="Loading drumplot...">
+            
+            <hr style="border:0; border-top:1px solid #444; margin:15px 0;">
+            
+            <a href="${secureDrumURL}" target="_blank" class="btn" style="background-color: #c62828; color: white !important;">🔍 ENLARGE DRUM PLOT</a>
+            <a href="${secureTremorURL}" target="_blank" class="btn" style="background-color: #8e0000; color: white !important; margin-top: 10px;">🔍 ENLARGE TREMOR CHART</a>
+        </div>`;
+});         
         });
 const searchInput = document.getElementById('stationSearch');
 const clearBtn = document.getElementById('clearSearch');
