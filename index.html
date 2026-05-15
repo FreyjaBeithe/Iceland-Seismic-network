@@ -4,83 +4,34 @@
     <link rel="icon" type="image/x-icon" href="favicon[1].ico">
     <meta charset="UTF-8">
     <title>Iceland Seismic Network</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css">
     <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css" />
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/leaflet-sidebar-v2@3.2.3/css/leaflet-sidebar.min.css" />
     <style>
         body { margin: 0; padding: 0; font-family: 'Segoe UI', Arial, sans-serif; background: #1a1a1a; overflow: hidden; }
-        
         #map { position: absolute; top: 0; bottom: 0; left: 0; right: 0; height: 100vh; width: 100%; z-index: 1; }
-
-        /* Label Styling */
-        .leaflet-tooltip-top:before, .leaflet-tooltip-bottom:before, 
-        .leaflet-tooltip-left:before, .leaflet-tooltip-right:before { display: none !important; }
-
-/* Clean, sharp, and perfectly sized */
+        
         .leaflet-sidebar-content img {
             display: block;
             margin: 8px auto;
-            /* 1. Remove the forced height to kill the black bars */
             width: 380px; 
             max-width: 95%;
             height: auto;
-            /* 2. Keep it sharp */
             image-rendering: auto;
             border: 1px solid #ddd;
-            background-color: #fff; /* Match the sidebar background */
+            background-color: #fff;
         }
 
-        /* Tighten the vertical spacing between elements */
         .leaflet-sidebar-content h2 { margin-top: 0; }
         .leaflet-sidebar-content p { margin: 4px 0 !important; }
+
+        .red-dot { background-color: #ff0000 !important; border: 1px solid #ffffff; border-radius: 50%; width: 8px !important; height: 8px !important; box-shadow: 0 0 3px rgba(0,0,0,0.8); z-index: 500 !important; }
         
+        /* 2. ADDED GPS TRIANGLE STYLE */
+        .gps-triangle { width: 0; height: 0; border-left: 7px solid transparent; border-right: 7px solid transparent; border-bottom: 12px solid #2e7d32; filter: drop-shadow(1px 1px 1px rgba(0,0,0,0.5)); }
 
-     /* 1. The Red Dot itself */
-        .red-dot {
-            background-color: #ff0000 !important; /* Forces red */
-            border: 1px solid #ffffff;
-            border-radius: 50%;
-            width: 8px !important;
-            height: 8px !important;
-            box-shadow: 0 0 3px rgba(0,0,0,0.8);
-            z-index: 500 !important; /* Keeps the dot visible */
-        }
-
-        /* 2. The Station Label (The Text) */
-        .station-label {
-            background: transparent !important;
-            border: none !important;
-            box-shadow: none !important;
-            color: #ffffff !important; 
-            font-weight: bold;
-            font-size: 11px;
-            /* Sharp black outline for Satellite/Topo clarity */
-            text-shadow: 
-                -1px -1px 0 #000,  
-                 1px -1px 0 #000,
-                -1px  1px 0 #000,
-                 1px  1px 0 #000;
-            text-align: center;
-            pointer-events: none; /* Let clicks pass through to the dot */
-        }
-
-     .btn { 
-    display: block; 
-    background: #c62828; 
-    color: #000000 !important; /* Forces the text to be black */
-    padding: 10px; 
-    text-align: center; 
-    text-decoration: none; 
-    border-radius: 5px; 
-    font-weight: bold; 
-    margin-bottom: 5px; 
-    transition: background 0.3s; 
-    border: none; 
-    cursor: pointer; 
-}
-        .btn:hover { background: #9b1c1c; }
-        .coords-text { font-family: monospace; font-size: 11px; color: #666; background: #f4f4f4; padding: 5px; border-radius: 3px; border-left: 3px solid #c62828; }
-        
-        /* Ensure sidebar is above map */
+        .station-label { background: transparent !important; border: none !important; box-shadow: none !important; color: #ffffff !important; font-weight: bold; font-size: 11px; text-shadow: -1px -1px 0 #000, 1px -1px 0 #000, -1px 1px 0 #000, 1px 1px 0 #000; text-align: center; pointer-events: none; }
+        .coords-text { font-family: monospace; font-size: 11px; color: #444; background: #f4f4f4; padding: 5px; border-radius: 3px; border-left: 3px solid #c62828; font-weight: bold; }
         .leaflet-sidebar { z-index: 2000 !important; }
     </style>
 </head>
@@ -88,42 +39,30 @@
 
     <div id="sidebar" class="leaflet-sidebar collapsed">
         <div class="leaflet-sidebar-tabs">
-           <ul role="tablist">
-    <li><a href="#home" role="tab">📈</a></li>
-    <li><a href="#gps" role="tab"><i class="fa fa-location-arrow"></i></a></li>
-</ul>
+            <ul role="tablist">
+                <li><a href="#home" role="tab">📈</a></li>
+                <li><a href="#gps" role="tab"><i class="fa fa-location-arrow"></i></a></li>
+            </ul>
         </div>
+
         <div class="leaflet-sidebar-content">
             <div class="leaflet-sidebar-pane" id="home">
                 <h2 class="leaflet-sidebar-header" style="background-color: #c62828;">Iceland Seismic Network<span class="leaflet-sidebar-close">×</span></h2>
                 <div style="padding:15px;">
-                    
                     <div style="position: relative; width: 100%; display: flex; align-items: center; margin-bottom: 20px;">
-    <input type="text" id="stationSearch" placeholder="Search station (e.g. ASH)..." 
-           style="width: 100%; padding: 10px; padding-right: 30px; border-radius: 4px; border: 1px solid #ccc; background: #fff; color: #333;">
-    <button id="clearSearch" title="Clear Search" 
-            style="position: absolute; right: 10px; background: none; border: none; color: #888; cursor: pointer; font-size: 18px; display: none;">✕</button>
-</div>
-<div class="leaflet-sidebar-pane" id="gps">
-    <h2 class="leaflet-sidebar-header" style="background-color: #2e7d32;">
-        GPS Deformation (Uplift)
-        <span class="leaflet-sidebar-close"><i class="fa fa-caret-left"></i></span>
-    </h2>
-    <div id="gps-data" style="padding:15px;">
-        <p style="color: #444; font-weight: bold; margin-top: 20px; text-align: center;">
-            Select a GPS station on the map to begin monitoring.
-        </p>
-    </div>
-</div>
-                  
-
+                        <input type="text" id="stationSearch" placeholder="Search station (e.g. ASH)..." style="width: 100%; padding: 10px; padding-right: 30px; border-radius: 4px; border: 1px solid #ccc; background: #fff; color: #333;">
+                        <button id="clearSearch" title="Clear Search" style="position: absolute; right: 10px; background: none; border: none; color: #888; cursor: pointer; font-size: 18px; display: none;">✕</button>
+                    </div>
                     <div id="station-data">
-                        <p>Select a station on the map to begin monitoring.</p>
+                        <p style="text-align: center; color: #666; font-style: italic;">Select a station on the map to begin monitoring.</p>
                     </div>
+                </div>
+            </div>
 
-                    <div style="margin-top: 30px; border-top: 1px solid #444; padding-top: 10px; text-align: center;">
-                        <p style="font-size: 11px; color: #888; margin: 0;">Created & Maintained by <br><b>VOLCANOWATCHERS</b></p>
-                    </div>
+            <div class="leaflet-sidebar-pane" id="gps">
+                <h2 class="leaflet-sidebar-header" style="background-color: #2e7d32;">GPS Deformation (Uplift)<span class="leaflet-sidebar-close">×</span></h2>
+                <div id="gps-data" style="padding:15px;">
+                    <p style="color: #444; font-weight: bold; margin-top: 20px; text-align: center;">Select a GPS station on the map to begin monitoring.</p>
                 </div>
             </div>
         </div>
@@ -131,11 +70,10 @@
 
     <div id="map"></div>
 
-   <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
+    <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/leaflet-sidebar-v2@3.2.3/js/leaflet-sidebar.min.js"></script>
 
     <script>
-        // 1. Initialize Map
         const allMarkers = [];
         var map = L.map('map', { 
             zoomControl: false,
@@ -145,52 +83,34 @@
             maxBoundsViscosity: 1.0
         }).setView([64.90, -18.5], 7);
 
-        var topo = L.tileLayer('https://{s}.tile.opentopomap.org/{z}/{x}/{y}.png', { maxZoom: 17 });
-        var satellite = L.tileLayer('https://server.arcgisonline.com/ArcGIS/rest/services/World_Imagery/MapServer/tile/{z}/{y}/{x}', {
-            attribution: 'Esri Satellite'
-        });
-
-        topo.addTo(map);
+        var topo = L.tileLayer('https://{s}.tile.opentopomap.org/{z}/{x}/{y}.png', { maxZoom: 17 }).addTo(map);
+        var satellite = L.tileLayer('https://server.arcgisonline.com/ArcGIS/rest/services/World_Imagery/MapServer/tile/{z}/{y}/{x}', { attribution: 'Esri Satellite' });
 
         var baseMaps = { "Topographic": topo, "Satellite": satellite };
         L.control.layers(baseMaps).addTo(map);
         L.control.scale({ imperial: false, position: 'bottomleft' }).addTo(map);
         L.control.zoom({ position: 'topright' }).addTo(map);
 
-        // 2. Initialize Sidebar
         var sidebar = L.control.sidebar({ container: 'sidebar' }).addTo(map);
 
-     // 1. Improved Reset Function
-function resetMap() {
-    // Clear the search input
-    const searchInput = document.getElementById('stationSearch');
-    const clearBtn = document.getElementById('clearSearch');
-    if (searchInput) searchInput.value = '';
-    if (clearBtn) clearBtn.style.display = 'none';
-
-    // Show all markers again (if any were filtered)
-    allMarkers.forEach(marker => marker.addTo(map));
-
-    // Clear the station data text in the sidebar
-    const stationData = document.getElementById('station-data');
-    if (stationData) {
-        stationData.innerHTML = '<p style="color: #666; font-style: italic; margin-top: 20px; text-align: center;">Select a station on the map to view live data.</p>';
-    }
-    
-    // SNAP BACK: Zoom out to the default Iceland view
-    map.setView([64.90, -18.5], 7); 
-}
-
-// 2. Attach the reset to the sidebar 'closing' event
-sidebar.on('closing', resetMap);
+        function resetMap() {
+            const searchInput = document.getElementById('stationSearch');
+            const clearBtn = document.getElementById('clearSearch');
+            if (searchInput) searchInput.value = '';
+            if (clearBtn) clearBtn.style.display = 'none';
+            allMarkers.forEach(marker => marker.addTo(map));
+            map.setView([64.90, -18.5], 7); 
+        }
+        sidebar.on('closing', resetMap);
         
-        // 3. Station Data
-           var stations = [
+        // 3. FULL STATION DATA (Seismic + GPS)
+        var stations = [
+            // SEISMIC
             { id: "klv", name: "Kleifarvatn", lat: 63.91447, lon: -21.95979, url: "klv" },
-            { id: "odf", name: "Oddafell", lat: 63.94690, lon: -22.11900, url: "odf" },
-            { id: "eld", name: "Eldey", lat: 63.74067, lon: -22.95803, url: "eld" },
-            { id: "fad", name: "Fagridalur", lat: 63.91668, lon: -22.28938, url: "fad" },
             { id: "grv", name: "Grindavík", lat: 63.85716, lon: -22.45583, url: "grv" },
+            { id: "lfe", name: "Lágafell", lat: 63.88183, lon: -22.53423, url: "lfe" },
+            { id: "fad", name: "Fagridalur", lat: 63.91668, lon: -22.28938, url: "fad" },
+                       { id: "grv", name: "Grindavík", lat: 63.85716, lon: -22.45583, url: "grv" },
             { id: "rne", name: "Reykjanesviti", lat: 63.81681, lon: -22.70563, url: "rne" },
             { id: "vog", name: "Vogar", lat: 63.96967, lon: -22.39285, url: "vog" },
             { id: "moh", name: "Móhálshnúkar", lat: 63.92269, lon: -22.06688, url: "moh" },
@@ -279,81 +199,72 @@ sidebar.on('closing', resetMap);
             { id: "vos", name: "Vogsosar", lat: 63.852759, lon: -21.702033, url: "vos" },
             { id: "vot", name: "Vöttur", lat: 64.27081, lon: -17.18254, url: "vot" },
             { id: "vsh", name: "Vestari Sauðahnjúkar", lat: 64.80775, lon: -15.72768, url: "vsh" }
-     ];
+
+       // GPS
+            { id: "seng", name: "Svartsengi GPS", lat: 63.8924, lon: -22.4252, type: "gps", url: "SENG" },
+            { id: "hrag", name: "Hraunshóll GPS", lat: 63.9211, lon: -22.3481, type: "gps", url: "HRAG" },
+            { id: "hs02", name: "Haaleiti GPS", lat: 63.8425, lon: -22.7161, type: "gps", url: "HS02" },
+            { id: "eldc", name: "Eldvörp GPS", lat: 63.8890, lon: -22.5120, type: "gps", url: "ELDC" },
+            { id: "kast", name: "Kast GPS", lat: 63.8561, lon: -22.3182, type: "gps", url: "KAST" },
+            { id: "vogc", name: "Vogar GPS", lat: 63.9664, lon: -22.3845, type: "gps", url: "VOGC" },
+            { id: "griv", name: "Grindavík GPS", lat: 63.8450, lon: -22.4410, type: "gps", url: "GRIV" },
+            { id: "sksh", name: "Skipastígshóll GPS", lat: 63.9031, lon: -22.4012, type: "gps", url: "SKSH" },
+            { id: "nbio", name: "Njarðvík GPS", lat: 63.9612, lon: -22.5134, type: "gps", url: "NBIO" }
+        ];
              
- // 4. Create Markers and Sidebar Content
         stations.forEach(st => {
-            var redDotIcon = L.divIcon({ className: 'red-dot', iconSize: [8, 8], iconAnchor: [4, 4] });
-            const marker = L.marker([st.lat, st.lon], { icon: redDotIcon }).addTo(map);
+            let icon;
+            if (st.type === 'gps') {
+                icon = L.divIcon({ className: 'gps-triangle', iconSize: [14, 12], iconAnchor: [7, 12] });
+            } else {
+                icon = L.divIcon({ className: 'red-dot', iconSize: [8, 8], iconAnchor: [4, 4] });
+            }
             
+            const marker = L.marker([st.lat, st.lon], { icon: icon }).addTo(map);
             marker.stationID = st.id.toLowerCase();
             allMarkers.push(marker);
 
-            marker.bindTooltip(st.id.toUpperCase(), {
-                permanent: true,
-                direction: 'top',
-                className: 'station-label',
-                offset: [22, 22]
-            });
+            marker.bindTooltip(st.id.toUpperCase(), { permanent: true, direction: 'top', className: 'station-label', offset: [22, 22] });
 
             marker.on('click', function() {
-                sidebar.open('home');
-                const secureDrumURL = `https://wsrv.nl/?url=http://hraun.vedur.is/ja/drumplot/drumplot/${st.url}_highpass_2.0.png&noproxy`;
-                const secureTremorURL = `https://wsrv.nl/?url=http://hraun.vedur.is/ja/oroi/${st.url}.gif&noproxy`;
-                
-document.getElementById('station-data').innerHTML = `
-    <div style="padding:10px;">
-        <h2 style="color:#c62828; margin-bottom:5px;">${st.name} (${st.id.toUpperCase()})</h2>
-        <div class="coords-text" style="color: #444; font-weight: bold;">LAT: ${st.lat} | LON: ${st.lon}</div>
-        
-       <p style="margin:5px 0 2px 0; font-weight: 800; color: #222; text-transform: uppercase; font-size: 11px; letter-spacing: 0.5px;">
-    🌋 Volcanic Tremor (Órói)
-</p>
-        <a href="${secureTremorURL}" target="_blank">
-            <img src="${secureTremorURL}" alt="Tremor Chart">
-        </a>
-        <p style="font-size: 12px; color: #555; text-align: center; margin-top: 5px; font-weight: 600;">
-            (Click image for full size)
-        </p>
-
-<p style="margin:12px 0 2px 0; font-weight: 800; color: #222; text-transform: uppercase; font-size: 11px; letter-spacing: 0.5px;">
-    📉 Drumplot (Highpass)
-</p>
-        <a href="${secureDrumURL}" target="_blank">
-            <img src="${secureDrumURL}" alt="Drum Plot">
-        </a>
-        <p style="font-size: 12px; color: #555; text-align: center; margin-top: 5px; font-weight: 600;">
-            (Click image for full size)
-        </p>
-    </div>`;
+                if (st.type === 'gps') {
+                    sidebar.open('gps');
+                    const gpsURL = `https://vmkerfi.vedur.is/gps/station_plot.php?station=${st.url}&type=vertical`;
+                    document.getElementById('gps-data').innerHTML = `
+                        <div style="padding:10px;">
+                            <h2 style="color:#2e7d32; margin-bottom:5px;">${st.name}</h2>
+                            <div class="coords-text">LAT: ${st.lat} | LON: ${st.lon}</div>
+                            <p style="margin:20px 0 8px 0; font-weight: 800; color: #222; text-transform: uppercase; font-size: 11px;">📈 Vertical Uplift</p>
+                            <a href="${gpsURL}" target="_blank"><img src="${gpsURL}" alt="GPS Chart"></a>
+                            <p style="font-size: 11px; color: #555; text-align: center; margin-top: 8px; font-weight: 600;">(Click chart for full history)</p>
+                        </div>`;
+                } else {
+                    sidebar.open('home');
+                    const secureDrumURL = `https://wsrv.nl/?url=http://hraun.vedur.is/ja/drumplot/drumplot/${st.url}_highpass_2.0.png&noproxy`;
+                    const secureTremorURL = `https://wsrv.nl/?url=http://hraun.vedur.is/ja/oroi/${st.url}.gif&noproxy`;
+                    document.getElementById('station-data').innerHTML = `
+                        <div style="padding:10px;">
+                            <h2 style="color:#c62828; margin-bottom:5px;">${st.name}</h2>
+                            <div class="coords-text">LAT: ${st.lat} | LON: ${st.lon}</div>
+                            <p style="margin:5px 0 2px 0; font-weight: 800; color: #222; text-transform: uppercase; font-size: 11px;">🌋 Volcanic Tremor (Órói)</p>
+                            <a href="${secureTremorURL}" target="_blank"><img src="${secureTremorURL}" alt="Tremor Chart"></a>
+                            <p style="font-size: 12px; color: #555; text-align: center; margin-top: 5px;">(Click image for full size)</p>
+                            <p style="margin:12px 0 2px 0; font-weight: 800; color: #222; text-transform: uppercase; font-size: 11px;">📉 Drumplot (Highpass)</p>
+                            <a href="${secureDrumURL}" target="_blank"><img src="${secureDrumURL}" alt="Drum Plot"></a>
+                            <p style="font-size: 12px; color: #555; text-align: center; margin-top: 5px;">(Click image for full size)</p>
+                        </div>`;
+                }
             });
         });
 
-        // 5. Search Logic
         const searchInput = document.getElementById('stationSearch');
-        const clearBtn = document.getElementById('clearSearch');
-
         if (searchInput) {
             searchInput.addEventListener('input', function(e) {
                 const term = e.target.value.toLowerCase().trim();
-                clearBtn.style.display = term.length > 0 ? 'block' : 'none';
-
                 if (term.length === 3) {
                     const match = allMarkers.find(m => m.stationID === term);
-                    if (match) {
-                        allMarkers.forEach(m => m.addTo(map));
-                        map.setView(match.getLatLng(), 10);
-                        match.fire('click');
-                    }
+                    if (match) { map.setView(match.getLatLng(), 10); match.fire('click'); }
                 }
-            });
-
-            clearBtn.addEventListener('click', function() {
-                searchInput.value = '';
-                this.style.display = 'none';
-                sidebar.close();
-                allMarkers.forEach(m => m.addTo(map));
-                map.setView([64.9, -19.0], 7);
             });
         }
     </script>
