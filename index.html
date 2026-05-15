@@ -14,6 +14,12 @@
         /* Label Styling */
         .leaflet-tooltip-top:before, .leaflet-tooltip-bottom:before, 
         .leaflet-tooltip-left:before, .leaflet-tooltip-right:before { display: none !important; }
+        /* Fixes the blurry tremor charts */
+        .leaflet-sidebar-content img {
+            image-rendering: -webkit-optimize-contrast; /* Chrome/Safari */
+            image-rendering: pixelated;               /* Modern Browsers */
+            image-rendering: crisp-edges;             /* Firefox */
+        }
 
      /* 1. The Red Dot itself */
         .red-dot {
