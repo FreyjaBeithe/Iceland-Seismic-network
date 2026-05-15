@@ -253,7 +253,7 @@ L.control.layers(baseMaps).addTo(map);
             { id: "vsh", name: "Vestari Sauðahnjúkar", lat: 64.80775, lon: -15.72768, url: "vsh" }
         ];
 
-        // 4. Create Markers
+// 4. Create Markers and Sidebar Logic
         stations.forEach(st => {
             var redDotIcon = L.divIcon({ className: 'red-dot', iconSize: [8, 8], iconAnchor: [4, 4] });
             const marker = L.marker([st.lat, st.lon], { icon: redDotIcon }).addTo(map);
@@ -269,29 +269,31 @@ L.control.layers(baseMaps).addTo(map);
                 offset: [22, 22]
             });
 
-marker.on('click', function() {
-            sidebar.open('home');
-            
-            const secureDrumURL = `https://wsrv.nl/?url=http://hraun.vedur.is/ja/drumplot/drumplot/${st.url}_highpass_2.0.png&noproxy`;
-            const secureTremorURL = `https://wsrv.nl/?url=http://hraun.vedur.is/ja/oroi/${st.url}.gif&noproxy`;
-            
-            document.getElementById('station-data').innerHTML = `
-                <div style="padding:10px;">
-                    <h2 style="color:#c62828; margin-bottom:5px;">${st.name} (${st.id.toUpperCase()})</h2>
-                    <div class="coords-text">LAT: ${st.lat} | LON: ${st.lon}</div>
-                    
-                    <p style="margin:15px 0 5px 0; font-weight: bold; color: #ddd;">Live Tremor Chart:</p>
-                    <a href="${secureTremorURL}" target="_blank" title="Click for full size">
-                        <img src="${secureTremorURL}" alt="Tremor Chart">
-                    </a>
-                    <p style="font-size: 11px; color: #888; text-align: center; margin-top: 5px;">(Click image for full size)</p>
+            marker.on('click', function() {
+                sidebar.open('home');
+                
+                // Secure proxy links for the charts
+                const secureDrumURL = `https://wsrv.nl/?url=http://hraun.vedur.is/ja/drumplot/drumplot/${st.url}_highpass_2.0.png&noproxy`;
+                const secureTremorURL = `https://wsrv.nl/?url=http://hraun.vedur.is/ja/oroi/${st.url}.gif&noproxy`;
+                
+                document.getElementById('station-data').innerHTML = `
+                    <div style="padding:10px;">
+                        <h2 style="color:#c62828; margin-bottom:5px;">${st.name} (${st.id.toUpperCase()})</h2>
+                        <div class="coords-text">LAT: ${st.lat} | LON: ${st.lon}</div>
+                        
+                        <p style="margin:15px 0 5px 0; font-weight: bold; color: #ddd;">Live Tremor Chart:</p>
+                        <a href="${secureTremorURL}" target="_blank" title="Click for full size">
+                            <img src="${secureTremorURL}" alt="Tremor Chart">
+                        </a>
+                        <p style="font-size: 11px; color: #888; text-align: center; margin-top: 5px;">(Click image for full size)</p>
 
-                    <p style="margin:25px 0 5px 0; font-weight: bold; color: #ddd;">Live Drum Plot:</p>
-                    <a href="${secureDrumURL}" target="_blank" title="Click for full size">
-                        <img src="${secureDrumURL}" alt="Drum Plot">
-                    </a>
-                    <p style="font-size: 11px; color: #888; text-align: center; margin-top: 5px;">(Click image for full size)</p>
-                </div>`;
+                        <p style="margin:25px 0 5px 0; font-weight: bold; color: #ddd;">Live Drum Plot:</p>
+                        <a href="${secureDrumURL}" target="_blank" title="Click for full size">
+                            <img src="${secureDrumURL}" alt="Drum Plot">
+                        </a>
+                        <p style="font-size: 11px; color: #888; text-align: center; margin-top: 5px;">(Click image for full size)</p>
+                    </div>`;
+            });
         });
         
 const searchInput = document.getElementById('stationSearch');
