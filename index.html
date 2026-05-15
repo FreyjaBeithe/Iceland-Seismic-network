@@ -150,7 +150,7 @@
         sidebar.on('closing', resetMap);
 
         // 3. Station Data
-        var stations = [
+       var stations = [
             { id: "klv", name: "Kleifarvatn", lat: 63.91447, lon: -21.95979, url: "klv" },
             { id: "odf", name: "Ölkelduháls", lat: 63.94253, lon: -22.11324, url: "odf" },
             { id: "eld", name: "Eldey", lat: 63.74067, lon: -22.95803, url: "eld" },
@@ -171,9 +171,38 @@
             { id: "bja", name: "Bjarnarflag", lat: 63.946, lon: -21.303, url: "bja" },
             { id: "hei", name: "Heiðarsporður", lat: 64.200, lon: -21.237, url: "hei" },
             { id: "ask", name: "Askja", lat: 65.053807, lon: -16.644591, url: "ask" },
-            { id: "vos", name: "Vogsosar", lat: 63.852759, lon: -21.702033, url: "vos" }
+            { id: "vos", name: "Vogsosar", lat: 63.852759, lon: -21.702033, url: "vos" },
+            { id: "ada", name: "Adalbol", lat: 65.032106, lon: -15.399528, url: "ada" },
+            { id: "alf", name: "Alftagrof", lat: 63.490613, lon: -19.188062, url: "alf" },
+            { id: "asm", name: "Asmuli", lat: 63.833146, lon: -20.611921, url: "asm" },
+            { id: "aus", name: "Austmannsbunga", lat: 63.684091, lon: -19.077611, url: "aus" },
+            { id: "bjk", name: "Bruarjokull", lat: 64.465884, lon: -16.769616, url: "bjk" },
+            { id: "ble", name: "Bleikáluháls", lat: 65.07795, lon: -18.63868, url: "ble" },
+            { id: "dim", name: "Dimmadalsas", lat: 65.961592, lon: -16.933611, url: "dim" },
+            { id: "djk", name: "Dyngjujökull", lat: 64.50405, lon: -17.23571, url: "djk" },
+            { id: "esk", name: "Eysrtri-Skogar", lat: 63.525355, lon: -19.449540, url: "esk" },
+            { id: "fag", name: "Fagurholmsmyri", lat: 63.875176, lon: -16.651050, url: "fag" },
+            { id: "fed", name: "Fedgar", lat: 64.02508, lon: -19.69086, url: "fed" },
+            { id: "gei", name: "Geitafell", lat: 63.946510, lon: -21.527603, url: "gei" },
+            { id: "god", name: "Godabunga", lat: 63.65976, lon: -19.32236, url: "god" },
+            { id: "grf", name: "Grímsfjall", lat: 64.40656, lon: -17.26713, url: "grf" },
+            { id: "gri", name: "Grimsey", lat: 66.54152, lon: -18.00951, url: "gri" },
+            { id: "hau", name: "Haukadalur", lat: 63.96851, lon: -19.96471, url: "hau" },
+            { id: "hvo", name: "Lágu-Hvolar", lat: 63.5261, lon: -18.84781, url: "hvo" },
+            { id: "jok", name: "Jökulheimar", lat: 64.31529, lon: -18.22546, url: "jok" },
+            { id: "kal", name: "Kálfafell", lat: 63.94761, lon: -17.68698, url: "kal" },
+            { id: "kis", name: "Kista", lat: 64.67413, lon: -17.56167, url: "kis" },
+            { id: "kre", name: "Krepputunguhraun", lat: 64.78369, lon: -16.38282, url: "kre" },
+            { id: "kro", name: "Krókur", lat: 64.09806, lon: -21.11976, url: "kro" },
+            { id: "lei", name: "Leirhöfn", lat: 66.40665, lon: -16.48957, url: "lei" },
+            { id: "lsk", name: "Litla-Skógfell", lat: 63.922795, lon: -22.368852, url: "lsk" },
+            { id: "nyl", name: "Nýlenda", lat: 63.97368, lon: -22.73792, url: "nyl" },
+            { id: "san", name: "Sandskeið", lat: 64.05601, lon: -21.57013, url: "san" },
+            { id: "sig", name: "Siglufjörður", lat: 66.13229, lon: -18.91483, url: "sig" },
+            { id: "tho", name: "Þorvaldshraun", lat: 64.93372, lon: -16.67558, url: "tho" },
+            { id: "ves", name: "Vestmannaeyjar (S)", lat: 63.44291, lon: -20.28664, url: "ves" }
         ];
-
+       
         // 4. Create Markers and Sidebar Content
         stations.forEach(st => {
             var redDotIcon = L.divIcon({ className: 'red-dot', iconSize: [8, 8], iconAnchor: [4, 4] });
