@@ -199,11 +199,16 @@ sidebar.on('content', function (e) {
         });
     }
 });
-        function resetMap() {
-            const searchInput = document.getElementById('stationSearch');
-            if (searchInput) searchInput.value = '';
-            allMarkers.forEach(marker => marker.addTo(map));
-        }
+       function resetMap() {
+    const searchInput = document.getElementById('stationSearch');
+    if (searchInput) searchInput.value = '';
+    
+    // This removes every single marker from the map
+    allMarkers.forEach(marker => map.removeLayer(marker));
+    
+    // Snap back to the main Iceland view
+    map.setView([64.9, -18.5], 7);
+}
         sidebar.on('closing', resetMap);
 
         // 3. Station Data
