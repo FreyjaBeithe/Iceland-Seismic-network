@@ -141,6 +141,10 @@
     </style>
 </head>
 <body>
+<div id="welcome-overlay">
+    <h1>Welcome to Volcano Watchers Iceland</h1>
+    <p>Select a monitoring icon (📈 or ↗) to get started!</p>
+</div>    
 
     <div id="sidebar" class="leaflet-sidebar collapsed">
         <div class="leaflet-sidebar-tabs">
@@ -211,9 +215,13 @@
         var sidebar = L.control.sidebar({ container: 'sidebar' }).addTo(map);
 
         // --- THE MAP FILTER LOGIC ---
-// This watches for when you click the tab icons and clears the map accordingly
 sidebar.on('content', function (e) {
+    // Hide the welcome overlay as soon as a tab is opened
+    const overlay = document.getElementById('welcome-overlay');
+    if (overlay) overlay.style.opacity = '0';
+    setTimeout(() => { if(overlay) overlay.remove(); }, 500); // Remove from code after fade
     if (e.id === 'gps') {
+       
         // --- GPS TAB OPENED: Show ONLY Triangles ---
         allMarkers.forEach(marker => {
             // Find the station data that matches this marker
