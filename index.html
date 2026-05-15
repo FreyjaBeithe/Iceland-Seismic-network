@@ -15,22 +15,19 @@
         .leaflet-tooltip-top:before, .leaflet-tooltip-bottom:before, 
         .leaflet-tooltip-left:before, .leaflet-tooltip-right:before { display: none !important; }
 
-      /* THE ULTIMATE SHARPNESS FIX */
+     /* Clean and Simple: No more digital blur */
         .leaflet-sidebar-content img {
             display: block;
-            margin: 20px auto;
-            /* 1. Stop the stretching! */
-            width: auto !important; 
-            height: auto !important;
-            /* 2. Maximum width safety */
-            max-width: 100%;
-            /* 3. Force crisp pixels */
-            image-rendering: -webkit-optimize-contrast; /* Chrome/Safari */
-            image-rendering: crisp-edges;             /* Firefox */
-            image-rendering: pixelated;               /* General */
-            /* 4. Boost contrast to make thin lines pop */
-            filter: contrast(1.2) brightness(1.05);
-            border: 2px solid #333;
+            margin: 15px auto;
+            /* 1. Set a fixed width that is close to the real image size */
+            width: 420px; 
+            max-width: 98%; /* Ensures it fits on smaller screens */
+            height: auto;
+            /* 2. Standard rendering (removes the "jagged" look) */
+            image-rendering: auto;
+            /* 3. A subtle border for contrast */
+            border: 1px solid #555;
+            background-color: #000;
         }
         
 
