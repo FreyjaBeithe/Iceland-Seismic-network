@@ -15,17 +15,17 @@
         .leaflet-tooltip-top:before, .leaflet-tooltip-bottom:before, 
         .leaflet-tooltip-left:before, .leaflet-tooltip-right:before { display: none !important; }
 
-        /* This forces the charts to be sharp and not stretch too much */
+        /* Force the image to stay small and sharp */
         .leaflet-sidebar-content img {
-            image-rendering: pixelated; /* Sharpens the pixels */
-            image-rendering: crisp-edges;
+            image-rendering: -webkit-optimize-contrast; /* Sharpens text */
+            image-rendering: pixelated;
             display: block;
-            margin: 15px auto; /* Centred with some breathing room */
-            width: auto;       /* Don't force it to be 100% wide */
-            max-width: 100%;   /* But don't let it overflow the sidebar */
-            border: 1px solid #444;
-            border-radius: 4px;
-        
+            margin: 15px auto; 
+            width: 400px; /* This is close to the IMO's natural chart width */
+            max-width: 95%; /* Safety for mobile screens */
+            height: auto;
+            border: 2px solid #333;
+            background: #000; /* Contrast background for the chart */
         }
         
 
