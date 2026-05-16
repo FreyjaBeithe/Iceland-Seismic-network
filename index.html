@@ -401,12 +401,13 @@ stations.forEach(st => {
         offset: [22, 22]
     });
 
-   marker.on('click', function() {
+ marker.on('click', function() {
     if (st.type === 'gps') {
         sidebar.open('gps');
         
-        const stationID = st.url.toUpperCase(); // Start with Uppercase (like HS02)
+        const stationID = st.url.toUpperCase();
         const gpsImageURL = `https://cdn.vedur.is/gps/locations/volcanos/reykjanes/graphs/24h/${stationID}-plate-90d.png`;
+        const fallbackURL = `https://cdn.vedur.is/gps/locations/volcanos/reykjanes/graphs/24h/${st.url.toLowerCase()}-plate-90d.png`;
         
         document.getElementById('gps-data').innerHTML = `
             <div style="padding:10px;">
@@ -417,10 +418,10 @@ stations.forEach(st => {
                 <p style="margin:20px 0 8px 0; font-weight: 800; color: #222; text-transform: uppercase; font-size: 11px; letter-spacing: 0.5px;">📈 90-Day Vertical Displacement</p>
                 
                 <a href="${gpsImageURL}" target="_blank">
-                    <img id="gps-chart-img" src="${gpsImageURL}" 
+                    <img src="${gpsImageURL}" 
                          alt="GPS Displacement Chart" 
                          style="width:100%; border:1px solid #ccc; background: white;"
-                         onerror="this.onerror=null; this.src='https://cdn.vedur.is/gps/locations/volcanos/reykjanes/graphs/24h/' + '${st.url.toLowerCase()}' + '-plate-90d.png';">
+                         onerror="this.onerror=null; this.src='${fallbackURL}';">
                 </a>
                 
                 <p style="font-size: 11px; color: #555; text-align: center; margin-top: 8px; font-weight: 600;">
